@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    p {
+      margin: 0;
+    }
+  </style>
+  <body>
+    <h1>Scroll me</h1>
+
+    <p>S</p>
+    <p>u</p>
+    <p>p</p>
+    <p>e</p>
+    <p>r</p>
+    <br />
+    <br />
+    <p>l</p>
+    <p>o</p>
+    <p>n</p>
+    <p>g</p>
+    <br />
+    <br />
+    <p>t</p>
+    <p>e</p>
+    <p>x</p>
+    <p>t</p>
+    <br />
+    <br />
+    <p>t</p>
+    <p>h</p>
+    <p>a</p>
+    <p>t</p>
+    <br />
+    <br />
+    <p>i</p>
+    <p>s</p>
+    <br />
+    <br />
+    <p>l</p>
+    <p>o</p>
+    <p>n</p>
+    <p>g</p>
+    <p>e</p>
+    <p>r</p>
+    <br />
+    <br />
+    <p>t</p>
+    <p>h</p>
+    <p>a</p>
+    <p>n</p>
+    <br />
+    <br />
+    <p>w</p>
+    <p>i</p>
+    <p>n</p>
+    <p>d</p>
+    <p>o</p>
+    <p>w</p>
+    <br />
+    <br />
+    <p>h</p>
+    <p>e</p>
+    <p>i</p>
+    <p>g</p>
+    <p>h</p>
+    <p>t</p>
+    <br />
+
+    <div id="vehicules"></div>
+  </body>
+
+  <script>
+    let loadedVehicules = [];
+    let currentPageIndex = 1;
+
+    const request = async (url) => {
+      const response = await fetch(url);
+      const json = await response.json();
+      return json;
+    };
+
+    const loadVehicules = async () => {
+      request(`https://swapi.dev/api/vehicles/?page=${currentPageIndex}`)
+        .then((response) => {
+          if (response.results) {
+            loadedVehicules = loadedVehicules.concat(response.results);
+          }
+          return response.results;
+        })
+        .catch((error) => {
+          throw error;
+        });
+    };
+
+    const renderVehicules = () => {
+      let elements = '';
+      loadedVehicules.forEach((vehicule) => {
+        elements += `<p>A vehicule : ${vehicule.name}</p>`;
+      });
+      document.querySelector('#vehicules').innerHTML = elements;
+    };
+
+    function populate() {
+      let windowRelativeBottom = document.documentElement.getBoundingClientRect().bottom;
+      if (windowRelativeBottom > document.documentElement.clientHeight + 100) return;
+
+      currentPageIndex++;
+
+      loadVehicules().then(() => {
+        renderVehicules();
+      });
+    }
+
+    window.addEventListener('scroll', populate);
+
+    populate(); // init document
+  </script>
+</html>
